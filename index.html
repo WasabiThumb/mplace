@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <title>mplace</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body class="w-dvw h-dvh m-0 p-0 overflow-clip">
+    <!-- Greeter -->
+    <section id="greeter" class="absolute top-0 left-0 w-full h-full bg-black
+                 z-40 flex items-center justify-center select-none">
+        <div class="text-white">
+            <span class="text-6xl flex font-jb w-min m-auto">
+                <span data-role="flip">w</span>
+                <span>place</span>
+            </span>
+            <span class="text-lg font-ubuntu opacity-50 text-center block mt-1" data-role="tagline"></span>
+        </div>
+    </section>
+    <main>
+        <!-- Map -->
+        <canvas id="map" width="640" height="480" class="absolute top-0 left-0 w-full h-full"></canvas>
+        <!-- Static UI -->
+        <section class="absolute top-0 left-0 w-full h-full pointer-events-none">
+            <!-- Alerts -->
+            <div id="alerts" class="absolute top-0 left-0 p-2 w-full grid grid-cols-1 gap-2 z-30">
+                <span class="bg-white text-lg m-auto drop-shadow-md rounded-full p-1 relative overflow-clip origin-top"
+                      data-template="error">
+                    <span class="bg-red-400 absolute left-0 top-0 w-2 h-full"></span>
+                    <span class="pl-4 pr-2 font-ubuntu" data-role="content">error</span>
+                </span>
+                <span class="bg-white text-lg m-auto drop-shadow-md rounded-full p-1 relative overflow-clip origin-top"
+                      data-template="warn">
+                    <span class="bg-yellow-300 absolute left-0 top-0 w-2 h-full"></span>
+                    <span class="pl-4 pr-2 font-ubuntu" data-role="content">warn</span>
+                </span>
+                <span class="bg-white text-lg m-auto drop-shadow-md rounded-full p-1 relative overflow-clip origin-top"
+                      data-template="info">
+                    <span class="bg-gray-500 absolute left-0 top-0 w-2 h-full"></span>
+                    <span class="pl-4 pr-2 font-ubuntu" data-role="content">info</span>
+                </span>
+            </div>
+            <!-- Tools -->
+            <div id="tools" class="absolute top-0 right-0 p-2 w-12 grid grid-cols-1 gap-2 pointer-events-auto">
+                <span data-role="settings"
+                      class="rounded-full bg-white drop-shadow-md cursor-pointer w-full"
+                      title="Settings">
+                    <img src="/images/icons/settings.svg" alt="Settings" class="w-full p-1">
+                </span>
+                <span data-role="navigate"
+                      class="rounded-full bg-white drop-shadow-md cursor-pointer w-full"
+                      title="Navigate">
+                    <img src="/images/icons/navigate.svg" alt="Navigate" class="w-full p-1">
+                </span>
+                <span data-role="share"
+                      class="rounded-full bg-white drop-shadow-md cursor-pointer w-full"
+                      title="Share">
+                    <img src="/images/icons/share.svg" alt="Share" class="w-full p-1 scale-75">
+                </span>
+            </div>
+            <!-- Stats -->
+            <div id="stats" class="absolute bottom-0 right-0 p-2 pointer-events-auto">
+                <div class="bg-white drop-shadow-md rounded-full text-sm p-2 overflow-clip">
+                    <span data-role="coords" class="font-jb select-none">0 N 0 E</span>
+                    <button data-role="copy-coords" class="ml-1 h-4 bg-none border-none p-0 relative cursor-pointer scale-200">
+                        <img src="/images/icons/copy.svg" alt="Copy" title="Copy"
+                             class="cursor-pointer h-full align-bottom scale-50">
+                    </button>
+                </div>
+            </div>
+            <!-- Debug -->
+            <div id="debug" class="absolute bottom-0 left-0 p-2 text-xs text-white
+                        font-ubuntu font-bold text-shadow-black text-shadow-md pointer-events-auto">
+                <p>
+                    <span data-role="total">0</span> tiles
+                </p>
+                <p>
+                    <span data-role="loading">0</span> loading, <span data-role="updating">0</span> updating
+                </p>
+                <p>
+                    <span data-role="usage">0%</span> in use
+                </p>
+                <p>
+                    mplace v<span data-role="version">UNKNOWN</span>
+                </p>
+            </div>
+        </section>
+        <!-- Modals -->
+        <section id="modals" class="absolute top-0 left-0 w-full h-full z-10 flex items-center justify-center pointer-events-auto">
+            <!-- Backdrop -->
+            <div data-role="backdrop" class="absolute top-0 left-0 w-full h-full bg-black opacity-60 cursor-pointer select-none"></div>
+            <div data-role="content" class="bg-white p-3 rounded-md z-20 font-ubuntu">
+                <!-- Settings -->
+                <div data-modal="settings">
+                    <h2 class="text-center text-2xl mb-2">Settings</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2">
+                        <label for="i0">
+                            Tile Forget Time
+                            <span class="text-xs opacity-50"
+                                  title="Time in milliseconds until unseen tiles are forgotten">
+                                ⓘ
+                            </span>
+                        </label>
+                        <span class="flex">
+                            <span data-display="rasterTimeToLive" class="opacity-50 min-w-12 mr-2 sm:text-left md:text-right">10000</span>
+                            <input id="i0" data-controls="rasterTimeToLive" type="range" min="1000" max="60000" autocomplete="off">
+                        </span>
+                        <label for="i1">Background Opacity</label>
+                        <span class="flex">
+                            <span data-display="backgroundOpacity" class="opacity-50 min-w-12 mr-2 sm:text-left md:text-right">255</span>
+                            <input id="i1" data-controls="backgroundOpacity" type="range" min="0" max="255" autocomplete="off">
+                        </span>
+                        <label for="i4">
+                            Background Downscaling
+                            <span class="text-xs"
+                                  title="Does not apply to already fetched tiles">
+                                ⚠️
+                            </span>
+                            <span class="text-xs opacity-50"
+                                  title="Number of times to half the resolution of background tiles">
+                                ⓘ
+                            </span>
+                        </label>
+                        <span class="flex">
+                            <span data-display="backgroundDownscaling" class="opacity-50 min-w-12 mr-2 sm:text-left md:text-right">255</span>
+                            <input id="i4" data-controls="backgroundDownscaling" type="range" min="0" max="8" autocomplete="off">
+                        </span>
+                        <label for="i2">Foreground Opacity</label>
+                        <span class="flex">
+                            <span data-display="foregroundOpacity" class="opacity-50 min-w-12 mr-2 sm:text-left md:text-right">255</span>
+                            <input id="i2" data-controls="foregroundOpacity" type="range" min="0" max="255" autocomplete="off">
+                        </span>
+                        <label for="i3">
+                            Foreground Minimum Zoom
+                            <span class="text-xs opacity-50"
+                                  title="Zoom level at which the foreground begins to render">
+                                ⓘ
+                            </span>
+                        </label>
+                        <span class="flex">
+                            <span data-display="foregroundZ" class="opacity-50 min-w-12 mr-2 sm:text-left md:text-right">8</span>
+                            <input id="i3" data-controls="foregroundZ" type="range" min="2" max="12" autocomplete="off">
+                        </span>
+                        <label for="i5">
+                            Foreground Downscaling
+                            <span class="text-xs"
+                                  title="Does not apply to already fetched tiles">
+                                ⚠️
+                            </span>
+                            <span class="text-xs opacity-50"
+                                  title="Number of times to half the resolution of foreground tiles">
+                                ⓘ
+                            </span>
+                        </label>
+                        <span class="flex">
+                            <span data-display="foregroundDownscaling" class="opacity-50 min-w-12 mr-2 sm:text-left md:text-right">255</span>
+                            <input id="i5" data-controls="foregroundDownscaling" type="range" min="0" max="9" autocomplete="off">
+                        </span>
+                    </div>
+                </div>
+                <!-- Navigate -->
+                <div data-modal="navigate">
+                    <div class="flex flex-col min-w-64 md:min-w-128 max-w-256">
+                        <div class="flex flex-row mb-2">
+                            <input type="text" data-role="query"
+                                   class="grow mr-4 p-2 bg-gray-200 rounded-md"
+                                   aria-label="Query" placeholder="Coordinates or address"
+                                   autocomplete="off">
+                            <button data-role="submit"
+                                    class="bg-blue-500 text-white p-2 rounded-md
+                                           cursor-pointer font-bold border-none">
+                                Search
+                            </button>
+                        </div>
+                        <div data-role="results" class="h-64 overflow-x-clip overflow-y-auto">
+                            <div data-template class="w-full border-2 border-gray-300 p-1 rounded-md flex flex-row">
+                                <div class="grow">
+                                    <h3 class="font-bold mr-4" data-role="title">Place Name</h3>
+                                    <p class="opacity-50" data-role="location">0N 0E</p>
+                                </div>
+                                <button class="h-12 aspect-square bg-lime-500 border-none rounded-sm
+                                               m-0 p-0 flex items-center justify-center cursor-pointer"
+                                        data-role="go">
+                                    <img src="/images/icons/go.svg" class="invert w-3/5" alt="Go">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="/src/main.ts" type="module"></script>
+  </body>
+</html>
