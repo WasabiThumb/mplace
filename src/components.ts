@@ -151,6 +151,7 @@ export class ComponentManager {
         }
 
         element.addEventListener("pointerdown", (e) => {
+            if (e.pointerType === "mouse" && e.button !== 0) return;
             const pointer = getPointer(e, true);
             if (c.captures) {
                 element.setPointerCapture(pointer.id);
@@ -158,7 +159,8 @@ export class ComponentManager {
             }
         });
         element.addEventListener("pointermove", (e) => {
-            const pointer = getPointer(e, true);
+            const pointer = getPointer(e, false);
+            if (!pointer) return;
             if (captured.has(pointer.id)) {
                 if (captured.size === 1) {
                     // Drag
@@ -182,7 +184,7 @@ export class ComponentManager {
                     const ndy = e.screenY - cy;
                     const nd = Math.sqrt((ndx * ndx) + (ndy * ndy));
 
-                    c.onZoom(nd - od, cx, cy);
+                    c.onZoom((nd - od) / 25, cx, cy);
                 }
             }
             pointer.x = e.screenX;
