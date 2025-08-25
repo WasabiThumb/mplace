@@ -26,20 +26,18 @@ jobs:
         with:
           node-version: "22"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
-          cache-dependency-path: ${{ env.BUILD_PATH }}/${{ steps.detect-package-manager.outputs.lockfile }}
+          cache-dependency-path: ./${{ steps.detect-package-manager.outputs.lockfile }}
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
       - name: Install dependencies
         run: npm ci
-        working-directory: ${{ env.BUILD_PATH }}
       - name: Build with Vite
         run: npm run build
-        working-directory: ${{ env.BUILD_PATH }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ env.BUILD_PATH }}/dist
+          path: ./dist
 
   deploy:
     environment:
