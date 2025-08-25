@@ -9,6 +9,7 @@ import {ModalsComponent} from "./components/modals";
 import {ToolsComponent} from "./components/tools";
 import {CompactLocation, type Location} from "./util/location";
 import {Coordinates} from "./util/mercator";
+import {ZoomComponent} from "./components/zoom";
 
 // Mount components
 const manager = new ComponentManager();
@@ -39,6 +40,10 @@ manager.mount(
 manager.mount(
     ToolsComponent,
     document.querySelector("#tools")!
+);
+manager.mount(
+    ZoomComponent,
+    document.querySelector("#zoom")!
 );
 
 // Parse the ?at URL parameter
