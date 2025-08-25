@@ -22,11 +22,8 @@ export class ZoomComponent extends AbstractComponent<HTMLElement> {
     }
 
     onMount() {
-        const { element, manager } = this;
-        const plus = element.querySelector<HTMLElement>(`[data-role="plus"]`);
-        const minus = element.querySelector<HTMLElement>(`[data-role="minus"]`);
-        const level = element.querySelector<HTMLElement>(`[data-role="level"]`);
-        if (!plus || !minus || !level) throw new Error("Missing required elements");
+        const { manager } = this;
+        const { plus, minus, level } = this.locate("plus", "minus", "level");
 
         this._state = {
             level,

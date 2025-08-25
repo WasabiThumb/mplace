@@ -60,8 +60,7 @@ export class ToolsComponent extends AbstractComponent<HTMLElement> {
         this._state = { alerts, modals, map };
 
         for (let tool of TOOLS) {
-            const el = this.element.querySelector<HTMLElement>(`[data-role="${tool.id}"]`);
-            if (!el) throw new Error(`Missing tool element: ${tool.id}`);
+            const el = this.locate(tool.id)[tool.id]!;
             el.addEventListener("pointerdown", () => {
                 this._useTool(tool);
             });

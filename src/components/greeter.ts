@@ -38,23 +38,16 @@ export class GreeterComponent extends AbstractComponent<HTMLElement> {
     }
 
     onMount() {
-        const flipElement =
-            this.element.querySelector<HTMLElement>(`[data-role="flip"]`);
-
-        const taglineElement =
-            this.element.querySelector<HTMLElement>(`[data-role="tagline"]`);
-
-        if (!flipElement || !taglineElement)
-            throw new Error("Missing required elements");
+        const { flip, tagline } = this.locate("flip", "tagline");
 
         // Set tagline
-        taglineElement.innerText = TAGLINES[Math.floor(Math.random() * TAGLINES.length)]!;
+        tagline.innerText = TAGLINES[Math.floor(Math.random() * TAGLINES.length)]!;
 
         this._state = {
             enabled: true,
             timer: 0,
             ready: false,
-            flipElement
+            flipElement: flip
         };
 
         const map: MapComponent = this.manager.get(MapComponent);

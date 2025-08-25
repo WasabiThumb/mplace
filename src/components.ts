@@ -21,6 +21,8 @@ export abstract class AbstractComponent<E extends HTMLElement> implements Compon
         readonly element: E
     ) { }
 
+    //
+
     get captures(): boolean {
         return false;
     }
@@ -38,6 +40,19 @@ export abstract class AbstractComponent<E extends HTMLElement> implements Compon
     onZoom(n: number, cx: number, cy: number): void { }
 
     onDrag(dx: number, dy: number): void { }
+
+    protected locate<R extends string>(...roles: R[]): Record<R, HTMLElement> {
+        const { element } = this;
+        const ret: { [k: string]: HTMLElement } = {};
+
+        for (let role of roles) {
+            const child = element.querySelector<HTMLElement>(`[data-role="${role}"]`);
+            if (!child) throw new Error(`Missing required element \"${role}\" for ${this.constructor.name}`);
+            ret[role] = child;
+        }
+
+        return ret as unknown as Record<R, HTMLElement>;
+    }
 
 }
 

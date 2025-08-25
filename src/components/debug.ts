@@ -23,14 +23,7 @@ export class DebugComponent extends AbstractComponent<HTMLElement> {
     }
 
     onMount() {
-        const { element } = this;
-        const total = element.querySelector<HTMLElement>(`[data-role="total"]`);
-        const loading = element.querySelector<HTMLElement>(`[data-role="loading"]`);
-        const updating = element.querySelector<HTMLElement>(`[data-role="updating"]`);
-        const usage = element.querySelector<HTMLElement>(`[data-role="usage"]`);
-        const version = element.querySelector<HTMLElement>(`[data-role="version"]`);
-        if (!total || !loading || !updating || !usage || !version) throw new Error("Missing required elements");
-
+        const { total, loading, updating, usage, version } = this.locate("total", "loading", "updating", "usage", "version");
         version.innerText = `${__VERSION__}`;
         this._state = {
             map: this.manager.get(MapComponent),

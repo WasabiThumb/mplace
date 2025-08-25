@@ -7,9 +7,8 @@ import {GreeterComponent} from "./components/greeter";
 import {AlertsComponent} from "./components/alerts";
 import {ModalsComponent} from "./components/modals";
 import {ToolsComponent} from "./components/tools";
-import {CompactLocation, type Location} from "./util/location";
-import {Coordinates} from "./util/mercator";
 import {ZoomComponent} from "./components/zoom";
+import {CompactLocation, type Location} from "./util/location";
 
 // Mount components
 const manager = new ComponentManager();

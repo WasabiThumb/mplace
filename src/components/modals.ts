@@ -70,17 +70,14 @@ class NavigateModalComponent extends AbstractComponent<HTMLElement> {
 
     onMount() {
         const { element } = this;
-
-        const query = element.querySelector<HTMLInputElement>(`[data-role="query"]`);
-        const results = element.querySelector<HTMLElement>(`[data-role="results"]`);
-        if (!query || !results) throw new Error("Missing required elements");
+        const { query, results } = this.locate("query", "results");
         const template = results.querySelector<HTMLElement>(`[data-template]`);
         if (!template) throw new Error("Failed to locate template element");
 
         this._state = {
             map: this.manager.get(MapComponent),
             alerts: this.manager.get(AlertsComponent),
-            query,
+            query: query as HTMLInputElement,
             results,
             template: template.cloneNode(true) as HTMLElement,
             loadController: null

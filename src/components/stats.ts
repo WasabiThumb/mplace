@@ -25,22 +25,15 @@ export class StatsComponent extends AbstractComponent<HTMLElement> {
     }
 
     onMount() {
-        const coordsElement =
-            this.element.querySelector<HTMLElement>(`[data-role="coords"]`);
-
-        const copyCoordsElement =
-            this.element.querySelector<HTMLElement>(`[data-role="copy-coords"]`);
-
-        if (!coordsElement || !copyCoordsElement)
-            throw new Error("Missing required elements");
+        const { coords, copyCoords } = this.locate("coords", "copyCoords");
 
         this._state = {
-            coordsElement,
+            coordsElement: coords,
             map: this.manager.get(MapComponent),
             alerts: this.manager.get(AlertsComponent)
         };
 
-        copyCoordsElement.addEventListener("pointerdown", () => {
+        copyCoords.addEventListener("pointerdown", () => {
             this._copy();
         });
     }
