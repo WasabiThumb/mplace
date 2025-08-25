@@ -414,9 +414,8 @@ export class MapComponent extends AbstractComponent<HTMLCanvasElement> {
                     continue;
                 }
 
-                // TODO: Uncomment
-                // const age = now - raster.lastUpdated;
-                // if (age >= refreshInterval) raster.markDirty();
+                const age = now - raster.lastUpdated;
+                if (age >= refreshInterval) raster.markDirty();
 
                 ctx.drawImage(
                     raster.bitmap,
